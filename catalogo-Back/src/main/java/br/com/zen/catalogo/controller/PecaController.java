@@ -86,7 +86,7 @@ public class PecaController {
             service.create(object);
         } catch (Exception e) {
             this.error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Não foi possível executar esta operação! "+e.getMessage());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.error);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(this.error);
         }
 		
 		this.success = new SuccessResponse(HttpStatus.OK.value(), "Operação realizada com sucesso!");
@@ -96,9 +96,8 @@ public class PecaController {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Peca object) {
         List<String> messages = new ArrayList<String>();
-        System.out.println(id);
-        if(id == null) {
-            
+        
+        if(id == null) {            
             this.error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Requisição feita com ID nulo!");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.error);
         }
