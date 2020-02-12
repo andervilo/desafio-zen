@@ -1,1 +1,28 @@
-<p>peca-edit works!</p>
+
+<div class="row">
+    <div class="col mb-2 mt-2">
+        <h2>Editar Peça</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label for="nome">Descrição da Peça</label>
+            <input [(ngModel)]="peca.nome" type="text" class="form-control" id="nome" name="nome" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="veiculoAplicacao">Aplicação da Peça</label>
+            <input [(ngModel)]="peca.veiculoAplicacao" type="text" class="form-control" id="veiculoAplicacao" name="veiculoAplicacao" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="pesoLiquido">Peso Líquido</label>
+            <input [(ngModel)]="peca.pesoLiquido" type="number" class="form-control" id="pesoLiquido" name="pesoLiquido" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="pesoBruto">Peso Bruto</label>
+            <input [(ngModel)]="peca.pesoBruto" type="number" class="form-control" id="pesoBruto" name="pesoBruto" placeholder="">
+        </div>
+        <button (click)="updatePeca()" class="btn btn-primary">Salvar</button>
+    </div>
+</div>

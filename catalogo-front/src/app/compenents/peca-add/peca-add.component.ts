@@ -25,8 +25,13 @@ export class PecaAddComponent implements OnInit {
       console.log(response);
 
       if(response['statusCode'] === 200){
+        alert(response['message']);
         this.router.navigate(['/']);
       }
+    },
+    error => {
+      console.log(error.error);
+      alert(' Erro: ' + error.error.statusCode +'\n' + error.error.errorMessage);
     });
   }
 

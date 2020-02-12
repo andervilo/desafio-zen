@@ -33,17 +33,22 @@ export class PecaEditComponent implements OnInit {
       this.peca = response;
     },
     error => {
-      alert(error.error.message + ' Erro: ' + error.error.statusCode);
+      alert(' Erro: ' + error.error.statusCode +'\n' + error.error.errorMessage);
       console.log(error.error);
     });
   }
 
   updatePeca() {
-    this.pecaService.edit(this.id, this.peca).subscribe(response => {
-      console.log(response);
-      // if(response['statusCode'] === 200){
-      //   this.router.navigate(['/']);
-      // }
+    this.pecaService.edit(this.peca.id, this.peca).subscribe(response => {
+      
+      if(response['statusCode'] === 200){
+        alert(response['message']);
+        this.router.navigate(['/']);
+      }
+    },
+    error => {
+      console.log(error.error);
+      alert(' Erro: ' + error.error.statusCode +'\n' + error.error.errorMessage);
     });
   }
 

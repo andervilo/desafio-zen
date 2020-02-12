@@ -29,6 +29,7 @@ export class PecaService {
   }
 
   edit(id: number, peca: Peca) {
+    console.log('edit: '+id);
     return this.http.put(this.url + '/' + id, peca);
   }
 }

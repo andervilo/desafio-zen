@@ -1,9 +1,7 @@
 package br.com.zen.catalogo.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -21,9 +19,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import br.com.zen.catalogo.model.Peca;
+import br.com.zen.catalogo.response.ErrorResponse;
+import br.com.zen.catalogo.response.SuccessResponse;
 import br.com.zen.catalogo.service.PecaService;
 
 @RestController
@@ -32,7 +31,11 @@ import br.com.zen.catalogo.service.PecaService;
 public class PecaController {
 
     @Autowired
-	private PecaService service;
+    private PecaService service;
+    
+    private ErrorResponse error = null;
+
+    private SuccessResponse success = null;
     
 	@GetMapping("")
 	public ResponseEntity<?> listAll() {
@@ -43,25 +46,21 @@ public class PecaController {
 	@GetMapping("/{id}")
 	public ResponseEntity<?> showById(@PathVariable Long id) {
         Peca entity = service.findById(id);
-        
-        Map<Object, Object> map = new HashMap<Object, Object>();
 
 		if(entity==null) {
-            map.put("success", false);
-            map.put("message", "Recurso nao encontrado!");
-            map.put("statusCode", HttpStatus.NOT_FOUND.value());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
+            this.error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), "Recurso nao encontrado!");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.error);
 		}
 		return (ResponseEntity<?>) ResponseEntity.ok().body(entity);
     }
     
-	@PostMapping(value="", consumes = "application/json")
+	@PostMapping("")
 	public ResponseEntity<?> create(@Valid @RequestBody Peca object) {
 		List<String> messages = new ArrayList<String>();
-        Map<Object, Object> map = new HashMap<Object, Object>();
         
 		if(object == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requisição feita com objeto Peça nulo!");
+            this.error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Requisição feita com objeto Peça nulo!");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.error);
         }
         
         if(object != null) {
@@ -78,70 +77,84 @@ public class PecaController {
             if((object.getPesoLiquido() != null && object.getPesoBruto() != null) && (object.getPesoLiquido().compareTo(object.getPesoBruto()) == 1)) messages.add("Peso líquido não pode ser maior que peso bruto!");
         
             if(!CollectionUtils.isEmpty(messages)){
-                map.put("success", false);
-                map.put("statusCode", HttpStatus.BAD_REQUEST.value());
-                map.put("errorMessage", messages);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+                this.error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), StringUtils.collectionToDelimitedString(messages, ","));
+			    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.error);
             }
         }
 		
-        Peca entity = new Peca();
-        
         try {
-            entity = service.create(object);
+            service.create(object);
         } catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Não foi possível executar esta operação! "+e.getMessage());
+            this.error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Não foi possível executar esta operação! "+e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.error);
         }
 		
-		map.put("success", true);
-        map.put("data", entity);
-        map.put("statusCode", HttpStatus.OK.value());
-		map.put("message", "Operação realizada com sucesso!");
-		
-		return ResponseEntity.ok().body(map);
+		this.success = new SuccessResponse(HttpStatus.OK.value(), "Operação realizada com sucesso!");
+		return ResponseEntity.ok().body(this.success);
     }
     
-	@PutMapping(value="/{id}", consumes = "application/json")
-	public ResponseEntity<?> update(Long id, @RequestBody Peca object) {
-		Map<Object, Object> map = new HashMap<Object, Object>();
+	@PutMapping("/{id}")
+	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Peca object) {
+        List<String> messages = new ArrayList<String>();
+        System.out.println(id);
+        if(id == null) {
+            
+            this.error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Requisição feita com ID nulo!");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.error);
+        }
 		
 		if(object == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requisição feita com objeto Peça nulo!");
-		}
+            this.error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Requisição feita com objeto Peça nulo!");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.error);
+        }
+        
+        if(object != null) {
+            if(StringUtils.isEmpty(object.getNome())) messages.add("Nome da peça é obrigatório!");
+
+            if(object.getPesoLiquido() == null) messages.add("Peso líquido da peça é obrigatório!");
+
+            if(object.getPesoBruto() == null) messages.add("Peso bruto da peça é obrigatório!");
+
+            if(!StringUtils.isEmpty(object.getNome()) && object.getNome().length() > 200) messages.add("Nome da peça deve conter no máximo 200 caracteres!");
+            
+            if(!StringUtils.isEmpty(object.getVeiculoAplicacao()) && object.getVeiculoAplicacao().length() > 200) messages.add("Veículo de aplicação deve conter no máximo 200 caracteres!");
+
+            if((object.getPesoLiquido() != null && object.getPesoBruto() != null) && (object.getPesoLiquido().compareTo(object.getPesoBruto()) == 1)) messages.add("Peso líquido não pode ser maior que peso bruto!");
+        
+            if(!CollectionUtils.isEmpty(messages)){
+                this.error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), StringUtils.collectionToDelimitedString(messages, ","));
+			    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.error);
+            }
+        }
         
         Peca entity = new Peca();
 
         try {
             entity = service.update(id, object);
         } catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Não foi possível executar esta operação! "+e.getMessage());
+			this.error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Não foi possível executar esta operação! "+e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(this.error);
         }
 
         if(entity == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Objeto não encontrado!");
-		}
-		
-		map.put("success", true);
-		map.put("data", entity);
-		map.put("message", "Operação realizada com sucesso!");
-		
-		return ResponseEntity.ok().body(map);
+            this.error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), "Objeto não encontrado!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.error);
+        }
+        
+        this.success = new SuccessResponse(HttpStatus.OK.value(), "Operação realizada com sucesso!");
+		return ResponseEntity.ok().body(this.success);
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-        Map<Object, Object> map = new HashMap<Object, Object>();
-        
         Boolean deleted = service.delete(id);
 
         if(!deleted) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Objeto não encontrado!");
+            this.error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), "Objeto não encontrado!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.error);
         }
         
-        map.put("success", true);
-        map.put("message", "Operação realizada com sucesso!");
-        map.put("statusCode", HttpStatus.OK.value());
-        
-		return ResponseEntity.ok().body(map);
+        this.success = new SuccessResponse(HttpStatus.OK.value(), "Operação realizada com sucesso!");
+		return ResponseEntity.ok().body(this.success);
 	}
 }
