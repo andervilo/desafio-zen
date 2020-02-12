@@ -47,7 +47,9 @@ public class PecaController {
         Map<Object, Object> map = new HashMap<Object, Object>();
 
 		if(entity==null) {
-            map.put("message", HttpStatus.NOT_FOUND.value());
+            map.put("success", false);
+            map.put("message", "Recurso nao encontrado!");
+            map.put("statusCode", HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
 		}
 		return (ResponseEntity<?>) ResponseEntity.ok().body(entity);

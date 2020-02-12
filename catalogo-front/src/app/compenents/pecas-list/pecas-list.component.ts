@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Peca } from 'src/app/interfaces/peca';
 import { PecaService } from 'src/app/services/peca-service.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-pecas-list',
@@ -28,6 +28,15 @@ export class PecasListComponent implements OnInit {
   }
 
   removePeca(id: number){
+    this.pecaService.delete(id).subscribe(response => {
+      console.log(response);
+      if(response['statusCode'] === 200){
+        this.findAllPecas();
+      }
+    });
+  }
+
+  editarPeca(id: number){
     this.pecaService.delete(id).subscribe(response => {
       console.log(response);
       if(response['statusCode'] === 200){

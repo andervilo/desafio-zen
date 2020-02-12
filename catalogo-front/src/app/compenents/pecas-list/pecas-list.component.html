@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col mb-2 mt-2">
-        <a class="btn btn-info" href="/add-peca">Adicionar Peça</a>
+        <a class="btn btn-info" routerLink="/add-peca">Adicionar Peça</a>
     </div>
 </div>
 
@@ -22,7 +22,8 @@
                 <td>{{peca.veiculoAplicacao}}</td>
                 <td>{{peca.pesoLiquido}} kg</td>
                 <td>{{peca.pesoBruto}} kg</td>
-                <td><button title="Excluir linha" (click)="removePeca(peca.id)" class="btn btn-danger text-white">X</button></td>
+                <td><button title="Excluir linha" (click)="removePeca(peca.id)" class="btn btn-danger text-white">Excluir</button></td>
+            <td><a title="Editar linha" routerLink="/edit-peca/{{peca.id}}" class="btn btn-warning text-white">Editar</a></td>
             </tr>
         </tbody>
 </table>
