@@ -1,7 +1,7 @@
 # Desafio ZEN
 
 ## Instruções Spring back-end
-Após clonar o projeto, entrar nesse endereço e alterar as configurações de banco de dados. Este projeto usa MySql. Deve ser criado o banco [bd_zen] e especificar usuário e senha do servidor:
+Após clonar o projeto, entrar nesse endereço e alterar as configurações de banco de dados. Este projeto usa MySql. Deve ser criado o banco [db_zen] e especificar usuário e senha do servidor:
 
 path: catalogo\catalogo-Back\src\main\resources\application.properties
 spring.datasource.username=`user`
