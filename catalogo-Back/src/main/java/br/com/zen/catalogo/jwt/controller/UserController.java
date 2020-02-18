@@ -50,7 +50,7 @@ public class UserController {
   }
 
 
-  @RequestMapping(method = RequestMethod.POST, value = "/signup")
+  @RequestMapping(method = RequestMethod.POST, value = "/user/signup")
   public ResponseEntity<?> addUser(@RequestBody UserRequest userRequest,
       UriComponentsBuilder ucBuilder) {
 
@@ -61,6 +61,19 @@ public class UserController {
     User user = this.userService.save(userRequest);
     HttpHeaders headers = new HttpHeaders();
     headers.setLocation(ucBuilder.path("/api/v1/user/{userId}").buildAndExpand(user.getId()).toUri());
+    return new ResponseEntity<User>(user, HttpStatus.CREATED);
+  }
+  
+  @RequestMapping(method = RequestMethod.POST, value = "/user")
+  public ResponseEntity<?> addNewUser(@RequestBody UserRequest userRequest) {
+
+    User existUser = this.userService.findByUsername(userRequest.getUsername());
+    if (existUser != null) {
+      throw new ResourceConflictException(userRequest.getId(), "Username already exists");
+    }
+    User user = this.userService.save(userRequest);
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.setLocation(ucBuilder.path("/api/v1/user/{userId}").buildAndExpand(user.getId()).toUri());
     return new ResponseEntity<User>(user, HttpStatus.CREATED);
   }
 

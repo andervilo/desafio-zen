@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.zen.catalogo.jwt.model.Authority;
+import br.com.zen.catalogo.jwt.model.UserRoleName;
 import br.com.zen.catalogo.jwt.repository.AuthorityRepository;
 import br.com.zen.catalogo.jwt.service.AuthorityService;
 
@@ -27,7 +28,7 @@ public class AuthorityServiceImpl implements AuthorityService {
   }
 
   @Override
-  public List<Authority> findByname(String name) {
+  public List<Authority> findByname(UserRoleName name) {
     // TODO Auto-generated method stub
     Authority auth = this.authorityRepository.findByName(name);
     List<Authority> auths = new ArrayList<>();

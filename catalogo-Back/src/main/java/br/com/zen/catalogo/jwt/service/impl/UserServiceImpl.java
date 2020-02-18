@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import br.com.zen.catalogo.jwt.model.Authority;
 import br.com.zen.catalogo.jwt.model.User;
 import br.com.zen.catalogo.jwt.model.UserRequest;
+import br.com.zen.catalogo.jwt.model.UserRoleName;
 import br.com.zen.catalogo.jwt.repository.UserRepository;
 import br.com.zen.catalogo.jwt.service.AuthorityService;
 import br.com.zen.catalogo.jwt.service.UserService;
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
     user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
     user.setFirstname(userRequest.getFirstname());
     user.setLastname(userRequest.getLastname());
-    List<Authority> auth = authService.findByname("ROLE_USER");
+    List<Authority> auth = authService.findByname(UserRoleName.ROLE_USER);
     user.setAuthorities(auth);
     this.userRepository.save(user);
     return user;

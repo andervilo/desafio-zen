@@ -27,10 +27,6 @@ import br.com.zen.catalogo.jwt.security.auth.RestAuthenticationEntryPoint;
 import br.com.zen.catalogo.jwt.security.auth.TokenAuthenticationFilter;
 import br.com.zen.catalogo.jwt.service.impl.CustomUserDetailsService;
 
-/**
- * Created by fan.jin on 2016-10-19.
- */
-
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -79,8 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().ignoringAntMatchers("/api/login", "/api/signup")
-        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+    http.csrf().disable();
         
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -94,8 +89,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/api/logout"))        
         .logoutSuccessHandler(logoutSuccess).deleteCookies(TOKEN_COOKIE);
     
+    //Peças
     http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/v1/pecas/**").hasAnyRole("ADMIN", "USER");
+    http.authorizeRequests().antMatchers(HttpMethod.POST,"/api/v1/pecas").hasAnyRole("ADMIN");
+    http.authorizeRequests().antMatchers(HttpMethod.PUT,"/api/v1/pecas/**").hasAnyRole("ADMIN");
+    http.authorizeRequests().antMatchers(HttpMethod.DELETE,"/api/v1/pecas/**").hasAnyRole("ADMIN");
+    
     http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/v1/user/all").hasAnyRole("ADMIN");
+    http.authorizeRequests().antMatchers(HttpMethod.POST,"/api/v1/user/signup").hasAnyRole("ADMIN");
     
     http.authorizeRequests().anyRequest().authenticated();
   }
