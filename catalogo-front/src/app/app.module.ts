@@ -8,13 +8,17 @@ import { PecasListComponent } from './compenents/pecas-list/pecas-list.component
 import { PecaAddComponent } from './compenents/peca-add/peca-add.component';
 import { FormsModule } from '@angular/forms';
 import { PecaEditComponent } from './compenents/peca-edit/peca-edit.component';
+import { LoginComponent } from './compenents/login/login.component';
+import { HomeComponent } from './compenents/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PecasListComponent,
     PecaAddComponent,
-    PecaEditComponent
+    PecaEditComponent,
+    LoginComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

@@ -3,11 +3,21 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PecasListComponent } from './compenents/pecas-list/pecas-list.component';
 import { PecaAddComponent } from './compenents/peca-add/peca-add.component';
+import { LoginComponent } from './compenents/login/login.component';
+import { HomeComponent } from './compenents/home/home.component';
 
 
 const routes: Routes = [
   {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
     path: '',
+    component: HomeComponent
+  },
+  {
+    path: 'peca-list',
     component: PecasListComponent
   },
   {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Peca } from 'src/app/interfaces/peca';
-import { PecaService } from 'src/app/services/peca-service.service';
+import { PecaService } from 'src/app/services/peca.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
